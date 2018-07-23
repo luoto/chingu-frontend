@@ -7,6 +7,7 @@ import { renderQAs } from '../FormCreator/answerCreators.js';
 // import ErrorPage from '../404/404';
 import Loader from '../Loader/Loader';
 // import SubmitVoyageApplication from './SubmitVoyageApplication';
+import { ApolloConsumer } from 'react-apollo';
 
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -20,6 +21,11 @@ const voyageApplicationPage2 = voyageApplicationData.filter((data) => { return d
 const newUserApplication = [newUserPage1, newUserPage2, newUserPage3, voyageApplicationPage1, voyageApplicationPage2];
 const voyageApplication = [voyageApplicationPage1, voyageApplicationPage2]
 
+const submitApplication = gql`
+mutation submitVoyageForm($voyage_form: JSON!, $user_form: JSON){
+  submitVoyageForm(input:{voyage_form:$voyage_form, user_form:$user_form})
+}
+`
 class VoyageApplication extends React.Component {
   constructor(props) {
     super(props);
@@ -29,23 +35,23 @@ class VoyageApplication extends React.Component {
       gql: '',
       progressBar: { width: '1%' },
       currentPage: 0,
-      1: new Set(),
-      4: '',
-      5: new Set(),
-      6: '',
-      7: '',
-      8: '',
-      9: '',
-      10: '',
-      11: '',
-      12: '',
-      13: '',
-      100: '',
-      101: new Set(),
-      102: '',
-      103: '',
-      104: '',
-      105: '',
+      1: new Set(), // cohort role
+      4: '', // coding journey
+      5: new Set(), // tech stacks
+      6: '', // committed to goals
+      7: '', // project showcase
+      8: '', // gender (Not supported yet)
+      9: '', // background
+      10: '', // coding history
+      11: '', //interests
+      12: '', // dinner guest
+      13: '', // greatest accomplishment
+      100: '', // hours per week
+      101: new Set(), // learning stacks
+      102: '', // audio meeting
+      103: '', // PM?
+      104: '', // skill tier
+      105: '', // free time
     }
   }
 
@@ -99,6 +105,40 @@ class VoyageApplication extends React.Component {
         : ((this.state.currentPage + 1) / this.state.application.length) * 100 + '%'
       this.setState({ progressBar: { width: progress } })
     });
+  }
+
+  onSubmit = (client) => {
+    const user_form = {
+      cohort_role: this.state[1],
+      location_on_coding_journey: this.state[4],
+      familiar_tech_stacks: this.state[5],
+      commitment_to_goals: this.state[6],
+      showcase_project_link: this.state[7],
+      // gender (Not supported)
+      personal_background: this.state[9],
+      coding_history: this.state[10],
+      personal_interest: this.state[11],
+      best_dinner_guest: this.state[12],
+      greatest_accomplishment: this.state[13],
+    }
+    const voyage_form = {
+      hours_per_week: this.state[100],
+      preferred_tech_stack: this.state[101],
+      voice_chat_preference: this.state[102],
+      pm_preference: this.state[103],
+      tier_level: this.state[104],
+      time_of_day_available: this.state[105],
+    }
+
+    client.mutate({
+      mutation: submitApplication,
+      // TODO: check/set state flag(newUserFormDone) if user did not fill out  
+      variables: this.state.newUserForm ? {voyage_form} : {voyage_form, user_form}
+    }).then(
+      () => {/*Do something*/}
+    ).catch(
+      err => {console.error(err)}
+    )
   }
 
   render() {
