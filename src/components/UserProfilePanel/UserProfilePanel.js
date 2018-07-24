@@ -11,21 +11,21 @@ class UserProfile extends React.Component {
   render() {
     return (
       <Query query={CURRENT_USER_QUERY}>
-        {({ loading, error, data }) => {
+        {({ loading, error, data: { user }, client }) => {
           if (loading) return "Loading...";
           if (error) return `Error! ${error.message}`;
-          
+          client.writeData({ data: { user }});
           return (
             <div className="user-profile-container-personal">
               <header className="user">
                 <div className="photobox">
                   <img
                     className="user-photo"
-                    src={data.user.avatar}
+                    src={user.avatar}
                     alt="userprofile"
                   />
-                  <p>{data.user.username}</p>
-                  <p>{data.user.country}</p>
+                  <p>{user.username}</p>
+                  <p>{user.country}</p>
                 </div>
                 <ul className="positions">
                   <li className="position">
@@ -42,15 +42,15 @@ class UserProfile extends React.Component {
               </header>
               <div className="user-background">
                 <h1>background</h1>
-                <p>{data.user.background}</p>
+                <p>{user.background}</p>
               </div>
               <div className="user-coding-history">
                 <h1>coding history</h1>
-                <p>{data.user.coding_history}</p>
+                <p>{user.coding_history}</p>
               </div>
               <div className="user-interests">
                 <h1>interests</h1>
-                <p>{data.user.interests}</p>
+                <p>{user.interests}</p>
               </div>
               <div className="user-links">
                 <h1>links</h1>
