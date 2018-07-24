@@ -7,7 +7,6 @@ import { renderQAs } from '../FormCreator/answerCreators.js';
 // import ErrorPage from '../404/404';
 import Loader from '../Loader/Loader';
 // import SubmitVoyageApplication from './SubmitVoyageApplication';
-import Store from '../../AppGlobalStore.js';
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 
@@ -107,7 +106,7 @@ class VoyageApplication extends React.Component {
   }
 
   submit = (e) => {
-    Store.updateGlobalState("hello", "world");
+    // Store.updateGlobalState("hello", "world");
   }
 
   render() {
