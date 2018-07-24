@@ -10,6 +10,7 @@ import programFAQ from "./static-api-elements/programFAQ";
 import CurrentPrograms from "./components/Pages/CurrentPrograms";
 import VoyageApplication from './components/VoyageApplication';
 import UserProfile from './components/UserProfilePanel/UserProfilePanel.js';
+import Missing404Page from './components/404/404';
 
 class App extends React.Component {
   render() {
@@ -25,6 +26,7 @@ class App extends React.Component {
         <Route exact path="/privacy" component={PrivacyPolicy} />
         <Route exact path="/companyfaq" render={() => <FAQ headerText="Company FAQs" data={companyFAQ} />} />
         <Route exact path="/programfaq" render={() => <FAQ headerText="Program FAQs" data={programFAQ} />} />
+        <Route path="/*" component={Missing404Page} />
         <Footer />
       </div>
     );

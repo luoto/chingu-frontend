@@ -1,8 +1,8 @@
 import _ from "lodash";
 import * as React from 'react';
-import {
-  Link
-} from "react-router-dom";
+import { Link } from "react-router-dom";
+import Client from '../../Client';
+import { gql } from 'apollo-boost';
 import LandingBarWithIcons from "./LandingBarWithIcons";
 import LandingTestimonial from "./LandingTestimonial";
 import LandingProjects from './LandingProjects';
@@ -12,19 +12,17 @@ import Login from "../Login";
 class Landing extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      register: false,
-      login: false
-    }
   }
 
   componentDidMount() {
-    // if the URL has /register , it will set register to true
-    if (window.location.pathname.includes('/register')) {
-      this.setState({ register: true, login: true })
-    }
-    if (window.location.pathname === '/login') {
-      this.setState({ login: true, register: false })
+    if(
+      localStorage.getItem("token")
+      && (
+        window.location.pathname.includes('login') ||
+        window.location.pathname.includes('register')
+      )
+    ) { 
+      window.location.replace('/');
     }
   }
 
@@ -156,18 +154,31 @@ class Landing extends React.Component {
     })
   }
 
+  renderEntranceBtn(class_name) {
+    return (
+      localStorage.getItem('token')
+        ? <Link to="/profile">
+            <button className={class_name}>Profile</button>
+          </Link>
+        : <Link to = "/login" >
+            <button className={class_name}>Apply</button> 
+          </Link >
+    );
+  }
+
   render() {
     return ( 
     <div className = "landing" >
-      {this.state.login ? <Login /> : null}
-      {this.state.register ? <Register /> : null}
+      {  
+        window.location.pathname.includes('login')
+          ? <Login />
+          : (window.location.pathname.includes('register') ? <Register /> : null)
+      }
       <div className = "landing-top" >
         <div className = "tagline-box" >
         <div className = "tagline" > Learn how to be a team developer<br /> & boost your portfolio. </div> 
         <div className = "tagline--subtext" > Gain real project experience with team opportunities </div> 
-        <Link to = "/login" >
-          <button className = "big-green-btn" > Apply </button> 
-        </Link > 
+        { this.renderEntranceBtn('big-green-btn') } 
       </div> 
         <img className = "landing-img" src = {require('../../assets/landingImage.png')} alt = "landingImage" />
       </div> 
@@ -195,9 +206,7 @@ class Landing extends React.Component {
       <div className = "chingu-bar" >
       <div className = "chingu-bar-box" >
         <div className = "chingu-bar-title" > Ready To Try Chingu ? </div>
-          <Link to = "/login" >
-            <button className = "chingu-green-btn" > Apply </button> 
-          </Link > 
+          { this.renderEntranceBtn('chingu-green-btn') } 
         </div>
       </div> 
     </div>
