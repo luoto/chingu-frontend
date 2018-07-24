@@ -1,12 +1,14 @@
 import * as React from "react";
 import { Redirect } from 'react-router-dom';
+import { gql } from 'apollo-boost';
+
+import Client from '../../Client';
 import { chinguApplicationData } from './chinguApplication.data';
 import { renderQAs } from '../FormCreator/answerCreators';
 import './Register.css';
 import '../FormCreator/FormCreator.css';
 import Error from '../Error/Error';
 import Loading from '../Loader/Loader';
-import Store from '../../AppGlobalStore';
 import { REGISTER_USER, AUTH_MUTATION } from './graphql/mutations';
 import SuccessForm from '../Success/Success';
 
@@ -25,15 +27,7 @@ class Register extends React.Component {
       204: '', // country
       205: new Date().getTimezoneOffset(), // timezone // TODO: preselect the timezone using this.state[205]
       206: '',
-    }
-  }
-
-  componentDidMount = () => {
-    Store.registerStateChangeListener(this.globalStoreChanged);
-  }
-
-  globalStoreChanged = (prevState, newState) => {
-    this.render();
+    };
   }
 
   toggleLoading = () => {
@@ -41,26 +35,27 @@ class Register extends React.Component {
   }
 
   errorHandling = (err) => {
-    this.setState({ error: true }, () => this.setState({ errorMessage: err }))
+    this.setState({ error: true, errorMessage: err });
   }
 
   componentDidMount() {
-    if (!window.localStorage.getItem("token")) {
+    if (!localStorage.getItem("token")) {
       this.authUser();
     }
   }
 
   authUser = () => {
-    Store.mutations.authUser(
-      this.toggleLoading,
-      this.errorHandling,
-      { code: this.state.code },
-      AUTH_MUTATION
-    )
-      .then(({ data }) => {
-        window.localStorage.setItem("token", data.userAuthGithub);
-        Store.updateGlobalState('id', data.id)
-      })
+    this.toggleLoading();
+    Client.mutate({
+      mutation: AUTH_MUTATION,
+      variables: { code: this.state.code }
+    }).then(({ data }) => {
+      localStorage.setItem('token', data.userAuthGithub);
+    }).catch((err) => {
+      window.location.replace('/login');
+    }).then(() => {
+      this.toggleLoading();
+    });
   }
 
   toggleValueInSet = (set, value) => {
@@ -92,34 +87,38 @@ class Register extends React.Component {
       value_of_chingu: this.state[203],
     };
 
-    Store.mutations.createUser(
-      this.toggleLoading,
-      this.errorHandling,
-      { user_data, application_data },
-      REGISTER_USER
-    )
-      .then(() => this.setState({ success: true }))
+    this.toggleLoading();
+    Client.mutate({
+      mutation: REGISTER_USER,
+      variables: { user_data, application_data }
+    }).then(() => {
+      this.setState({ success: true });
+    }).catch((err) => {
+      this.errorHandling(err);
+    }).then(() => {
+      this.toggleLoading();
+    });
   }
 
   render() {
     return (
       this.state.code
         ? <React.Fragment>
-          {this.state.loading ? <Loading /> : null}
-          {this.state.error ? <Error goBack={"/register"} error={this.state.errorMessage} /> : null}
-          <div className="chingu-application-container">
-            <div className="chingu-application-modal">
-              {this.state.success
-                ? <SuccessForm />
-                : <React.Fragment>
-                  <div className="chingu-application-title">New User Onboarding Survey</div>
-                  {renderQAs(chinguApplicationData, this.onFormChange, this.state)}
-                  <button onClick={() => this.onSubmit()} className="chingu-application-btn">Save</button>
-                </React.Fragment>
-              }
+            {this.state.loading ? <Loading /> : null}
+            {this.state.error ? <Error goBack={"/register"} error={this.state.errorMessage} /> : null}
+            <div className="chingu-application-container">
+              <div className="chingu-application-modal">
+                {this.state.success
+                  ? <SuccessForm />
+                  : <React.Fragment>
+                      <div className="chingu-application-title">New User Onboarding Survey</div>
+                      {renderQAs(chinguApplicationData, this.onFormChange, this.state)}
+                      <button onClick={() => this.onSubmit()} className="chingu-application-btn">Save</button>
+                    </React.Fragment>
+                }
+              </div>
             </div>
-          </div>
-        </React.Fragment>
+          </React.Fragment>
         : <Redirect to='/login' />
     )
   }
