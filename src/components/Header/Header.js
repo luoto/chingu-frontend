@@ -1,22 +1,23 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { graphql } from "react-apollo";
-import currentUserQuery from "../../queries/currentUserQuery";
 import Store from '../../AppGlobalStore';
 
 const Header = props => {
   let teams = [];
   let user = null;
-
-  if (Store.state.user) {
-    user = Store.state.user;
-    teams = Store.state.user.teams;
+  const userState = Store.getUserState();
+  
+  if (userState) {
+    user = userState;
+    teams = userState.teams;
   }
   
   const handleLogout = e => {
     e.preventDefault();
+    // TODO: clear local storage entirely?
     window.localStorage.removeItem("token");
     window.localStorage.removeItem("store");
+    window.localStorage.removeItem("lastChecked");
     window.location = "/";
   };
 
@@ -82,4 +83,4 @@ const Header = props => {
   )
 }
 
-export default graphql(currentUserQuery)(Header);
+export default Header;
