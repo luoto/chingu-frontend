@@ -155,7 +155,7 @@ class Landing extends React.Component {
           <div className="tagline-box" >
             <div className="tagline" > Learn how to be a team developer<br /> & boost your portfolio. </div>
             <div className="tagline--subtext" > Gain real project experience with team opportunities </div>
-            {Store.state.user
+            {Store.getUserState()
               ? null
               : <Link to="/login" >
                 <button className="big-green-btn" > Apply </button>
@@ -185,7 +185,7 @@ class Landing extends React.Component {
           <div className="cohorts-bar-title" > What People Are Saying About Chingu </div>
           <div className="cohorts-bar-items" > {this.renderTestimonialBar()} </div>
         </div >
-        {Store.state.user
+        {Store.getUserState()
           ? null
           : <div className="chingu-bar" >
             <div className="chingu-bar-box" >

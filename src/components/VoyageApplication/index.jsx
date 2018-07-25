@@ -60,7 +60,8 @@ class VoyageApplication extends React.Component {
     // if this user has not been part of a voyage before
     // or was rejected before and not been part of a voyage
     let progress = (1 / this.state.application.length) * 100 + '%';
-    if (Store.state.user && Store.state.user.status !== 'voyage_ready') {
+    const userState = Store.getUserState();
+    if (userState && userState.status !== 'voyage_ready') {
       this.setState({
         application: newUserApplication,
         gql: 'SUBMIT_NEW_USER_VOYAGE_APPLICATION',

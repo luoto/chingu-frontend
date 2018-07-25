@@ -6,7 +6,7 @@ import Store from '../../AppGlobalStore';
 
 class UserProfile extends React.Component {
   render() {
-    const user = Store.state.user;
+    const user = Store.getUserState();
 
     const currentTeams = user.teams.filter(team => { return team.cohort.status === 'ongoing'});
     const pastTeams = user.teams.filter(team => { return team.cohort.status === 'ended' });

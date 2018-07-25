@@ -38,6 +38,8 @@ class Register extends React.Component {
   }
 
   componentDidMount = () => {
+    console.log('mounting')
+    console.log(Store.getUserState());
     if (!window.localStorage.getItem("token")) {
       Store.mutations.authUser(
         this.toggleLoading,
@@ -47,7 +49,9 @@ class Register extends React.Component {
       ).then(() => {
         // if the user has already filled out the register form
         // redirect to profile page
-        if (Store.state.user.status !== 'profile_incomplete') {
+        console.log('inside mount')
+        console.log(Store.getUserState())
+        if (Store.getUserState().status !== 'profile_incomplete') {
           this.setState({ shouldRedirect: true })
         }
       });

@@ -25,7 +25,7 @@ function RenderApp() {
   );
 }
 
-if (!Store.state.user && localStorage.getItem('token')) {
+if (!Store.getUserState() && localStorage.getItem('token')) {
   Store.getAuthedUser().then(() => { RenderApp(); });
 }
 else {

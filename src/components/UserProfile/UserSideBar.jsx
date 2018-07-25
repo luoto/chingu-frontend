@@ -28,7 +28,7 @@ const USER_INFO_DOM_ELEMENTS = [
 
 class UserSideBar extends React.Component {
   render() {
-    const user = Store.state.user;
+    const user = Store.getUserState();
 
     let userInfoDOM = USER_INFO_DOM_ELEMENTS.map(elem => {
       if (user[elem.schemaKey] && user[elem.schemaKey].length > 0) {
