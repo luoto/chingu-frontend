@@ -25,7 +25,7 @@ const Request = ({ component: Component, query, variables, options, globalLoader
     {
       ({ loading, error, data }) => {
         if (error) return <Error error={error.message} /> // TODO: Pass goBack prop
-        globalLoader && toggleGlobalLoader(loading && globalLoader)
+        globalLoader && toggleGlobalLoader(loading)
         if (loading && globalLoader) return null
         return <Component {...props} data={data} />
       }
