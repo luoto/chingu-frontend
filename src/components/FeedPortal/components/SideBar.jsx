@@ -10,11 +10,54 @@ const SidebarBtn = ({ lbl, active, team }) => (
   </Fragment>
 )
 
-const TeamLinks = ({ teams }) => {
-  let renderedTeamLinks = teams.map((team, idx) => {
-    return (
-      <SidebarBtn team={true} key={idx} lbl={team.cohort.title + "/" + team.title} />
-    )
+const TeamLinks = teams => {
+  if (!teams.length) {
+    teams = [{
+      "id": "2",
+      "title": "vampires Team B",
+      "cohort": {
+        "id": "2",
+        "title": "Voyage B",
+        "start_date": Date.now() - 400,
+        "end_date": Date.now() - 200
+      }
+    },
+    {
+      "id": "3",
+      "title": "vampires Team C",
+      "cohort": {
+        "id": "3",
+        "title": "Voyage C",
+        "start_date": Date.now() - 100,
+        "end_date": Date.now() + 100
+      }
+    }, {
+      "id": "1",
+      "title": "vampires Team A",
+      "cohort": {
+        "id": "1",
+        "title": "Voyage A",
+        "start_date": Date.now() - 700,
+        "end_date": Date.now() - 500,
+      }
+    },]
+  }
+
+  const filterSort = teams => {
+    // Expected C A B
+    // TODO filtersort in one pass over array
+    const now = Date.now() // TODO: Find end of day ???
+    const active = team => team.cohort.end_date >= now
+    const inactive = team => team.cohort.end_date < now
+    const sort = team => {
+      team.sort((a, b) => a.cohort.end_date - b.cohort.end_date)
+      return team
+    }
+    return [...sort(teams.filter(active)), ...sort(teams.filter(inactive))]
+  }
+
+  let renderedTeamLinks = filterSort(teams).map((team, idx) => {
+    return <SidebarBtn team key={idx} lbl={team.cohort.title + "/" + team.title} />
   })
   return (
     <Fragment>{renderedTeamLinks}</Fragment>
