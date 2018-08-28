@@ -13,21 +13,21 @@ const loaderQuery = gql`
   }
 `
 
+const FullscreenLoader = () =>
+  <Modal
+    open
+    persist
+    background="white">
+    <div className="loader--global" />
+  </Modal>
+
 const GlobalLoader = () => (
   <Query query={loaderQuery}>
-    {
-      ({ data: { loaderState: { isShowing } } }) => {
-        console.log("global")
-        return !isShowing
-          ? null
-          : <Modal
-            open
-            persist
-            background="white">
-            <div className="loader--global" />
-          </Modal>
-      }
-    }
+    {({ data: { loaderState: { isShowing } } }) => (
+      !isShowing
+        ? null
+        : <FullscreenLoader />
+    )}
   </Query>
 )
 
@@ -39,11 +39,12 @@ const LoaderContainer = props => {
     background: backgroundColor, // background of the container
     color: borderTopColor
   } = props
+  console.log({ size })
 
-  // Global fullscreen loader
-  if (size === "global") {
-    return <GlobalLoader />
-  }
+  // FullscreenLoader
+  if (!size) return <FullscreenLoader />
+  // GlobalLoader - buggy
+  if (size === "global") return <GlobalLoader />
 
   // Otherwise return styled
   return (
@@ -67,7 +68,6 @@ LoaderContainer.propTypes = {
 }
 
 LoaderContainer.defaultProps = {
-  size: "small",
   background: "#00000000"
 }
 
