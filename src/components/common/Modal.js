@@ -37,7 +37,7 @@ export default class extends React.Component {
   static defaultProps = {
     open: false,
     persist: false,
-    background: "transparent",
+    background: "white",
     onModalClick: false
   }
 
