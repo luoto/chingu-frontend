@@ -16,9 +16,10 @@ import VoyagePortal from './components/VoyagePortal';
 import VoyageApplication from './components/VoyageApplication';
 import Register from './components/Register';
 import Login from './components/Login';
-import FeedPortal from "./components/FeedPortal"
-import Private from "./components/utilities/PrivateRoute"
-import Loader from "./components/Loader"
+import FeedPortal from "./components/FeedPortal";
+import Private from "./components/utilities/PrivateRoute";
+import Loader from "./components/Loader";
+import ProjectShowcase from './components/ProjectShowcase';
 import TeamStandup from "./components/TeamStandup";
 
 export default () => (
@@ -82,9 +83,10 @@ export default () => (
       <Route exact path="/privacy" component={PrivacyPolicy} />
       <Route exact path="/companyfaq" render={() => <FAQ headerText="Company FAQs" data={companyFAQ} />} />
       <Route exact path="/programfaq" render={() => <FAQ headerText="Program FAQs" data={programFAQ} />} />
+      <Route exact path="/project/:projectId" render={
+        ({ match: { params: { projectId } } }) => <ProjectShowcase projectId={projectId}/> } />
       <Route path="*" exact component={Missing404Page} />
     </Switch>
     <Footer />
   </div>
 )
-
