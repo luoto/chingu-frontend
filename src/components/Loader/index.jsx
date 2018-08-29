@@ -39,7 +39,6 @@ const LoaderContainer = props => {
     background: backgroundColor, // background of the container
     color: borderTopColor
   } = props
-  console.log({ size })
 
   // FullscreenLoader
   if (!size) return <FullscreenLoader />
