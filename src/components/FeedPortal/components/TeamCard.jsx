@@ -3,18 +3,22 @@ import dateFormatter from '../../utilities/dateFormatter';
 import { Link } from "react-router-dom"
 import './TeamCard.css';
 
-const TeamCard = ({ team }) => {
+const TeamCard = ({ user: { available_standups }, team }) => {
+  const standupStatus = !!available_standups.length && available_standups.some(su => su.team.id === team.id)
+    ? ""
+    : "--disabled"
+
   return (
     <div className="team-card-container">
       <div className="team-card-info-container">
         <InfoComponents team={team} />
       </div>
       <div className="team-card-buttons-container">
-        {/* <Link to={"/project/" + team.project.id + "/workspace"} className="user-btn">Team Workspace</Link> */}
-        <Link to={"/project/" + team.project.id} className="user-btn">Project Showcase</Link>
-        <Link className="user-btn" to={`/team/${team.id}/standup`}>Team Standups</Link>
+        <Link to={"/project/" + team.project.id + "/workspace"} className="user-btn--disabled">Team Workspace</Link>
+        <Link to={"/project/" + team.project.id} className="user-btn">Project Page</Link>
+        <Link className={`user-btn${standupStatus}`} to={`/team/${team.id}/standup`}>Team Standups</Link>
       </div>
-    </div>
+    </div >
   )
 }
 
@@ -28,7 +32,7 @@ const InfoComponents = ({ team }) => {
     { label: 'Tier', data: 'Tier ' + team.tier.level },
     { label: 'Team', data: project.users },
     { label: 'Project', data: project.title },
-    { label: 'Description', data: project.description },
+    { label: 'Description', data: project.elevator_pitch },
     // { label: 'TechStack', data: project.skills },
   ]
 

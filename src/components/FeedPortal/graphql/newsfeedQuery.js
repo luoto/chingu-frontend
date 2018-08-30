@@ -2,9 +2,17 @@ import { gql } from "apollo-boost"
 
 const getNewsfeed = gql`
   query getNewsfeed($input: NewsfeedInput!) {
+    user {
+      id
+      available_standups {
+        id
+        team: cohort_team {
+          id
+        }
+      }
+    }
     newsfeed(input: $input) {
       id
-
       team {
         id
         title
@@ -22,7 +30,7 @@ const getNewsfeed = gql`
         project {
             id
             title
-            description
+            elevator_pitch
             users {
                 username
                 avatar
