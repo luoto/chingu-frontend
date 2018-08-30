@@ -1,4 +1,5 @@
 import * as React from "react";
+import { withRouter } from "react-router-dom"
 import * as Cards from "../VoyageCard/VoyageCard";
 import UserSideBar from "./UserSideBar";
 import Request from "../utilities/Request"
@@ -33,6 +34,10 @@ class UserProfile extends React.Component {
     })
   }
   componentDidMount() {
+    // Redirect  /profile/:currentUser back to /profile
+    const { username, data, history } = this.props
+    if (username === data.currentUser.username) history.replace("/profile")
+
     this.updateState();
   }
 
@@ -120,11 +125,13 @@ class UserProfile extends React.Component {
 
 }
 
-export default props => (
+export default withRouter(props => (
   <Request
     {...props}
     query={profileQuery}
     variables={props.username && { username: props.username }}
     component={UserProfile}
     globalLoader
-  />)
+  />
+)
+)

@@ -2,6 +2,10 @@ import { gql } from "apollo-boost"
 
 const profileQuery = gql`
   query getUserProfile($username: String) {
+    currentUser: user {
+      id
+      username
+    }
     user(username: $username) {
       id
       username
