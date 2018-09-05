@@ -21,71 +21,115 @@ import Private from "./components/utilities/PrivateRoute"
 import AllProjects from './components/AllProjects';
 import TeamStandup from "./components/TeamStandup";
 import ProjectShowcase from "./components/ProjectShowcase"
+import rt from "./routes.cfg"
 
 export default () => (
   <div className="App">
     <Header />
     <Switch>
-      <Route exact path="/" component={Landing} />
+      <Route 
+        exact 
+        path={rt.landing.path} 
+        component={rt.landing.component} />
       <Route
-        exact path="/login"
+        exact 
+        path={rt.login.path}
         render={
-          ({ location: { search } }) => <Login queryString={search} />
-        }
-      />
+          ({ location: { search } }) => 
+            rt.login.component({ queryString: search })
+        }/>
       <Private
-        exact path="/register"
+        exact 
+        path={rt.register.path}
         render={
-          () => <Register version={null} /> // set custom 'chingu_application' version here
-        }
-      />
-      <Private exact path="/profile" render={() => <UserProfile editable={true} />} />
+          () => rt.register({version: null}) // set custom 'chingu_application' version here
+        }/>
+      <Private 
+        exact 
+        path={rt.userprofile.path} 
+        // TODO: refactor - editable should not be here
+        render={() => 
+          rt.userprofile.component({ editable: true })} />
       <Route
-        exact path="/profile/:username"
+        exact 
+        path={rt.profile.path}
         render={
           ({ match: { params: { username } } }) => (
-            <UserProfile
-              username={username}
-              editable={false}
-            />
-          )
-        }
-      />
-      <Private exact path="/voyage" component={VoyagePortal} />
+            rt.profile.component({username, editable: false})
+          )}/>
+      <Private 
+        exact 
+        path={rt.voyages.path} 
+        component={rt.voyages.component} />
       <Private
-        exact path="/voyage/application/:voyage_id"
+        exact 
+        path="/voyage/application/:voyage_id"
         render={
           ({ match: { params: { voyage_id } } }) => (
-            <VoyageApplication
-              voyage_id={voyage_id}
-              voyageVersion={null} // set custom 'voyage_application' version here
-              newUserVersion={null} // set custom 'new_voyage_user' version here
-            />
-          )
-        }
-      />
-      <Private exact path="/newsfeed" component={FeedPortal} />
-      <Private exact path="/team/checkin/:id" component={WeeklyCheckin} />
-      <Route exact path="/projects" component={AllProjects} />
+            rt.application.component({
+              voyage_id,
+              voyageVersion: null, // set custom 'voyage_application' version here
+              newUserVersion: null,
+            })
+          )}/>
+      <Private 
+        exact 
+        path={rt.newsfeed.path}
+        component={rt.newsfeed.component} />
+      <Private 
+        exact 
+        path={rt.checkin.path} 
+        component={rt.checkin.component} />
+      <Route 
+        exact 
+        path={rt.projects.path} 
+        component={rt.projects.component} />
       <Private
-        exact path="/team/:team_id/standup"
+        exact 
+        path={rt.standup.path}
         render={
-          ({ match: { params: { team_id } } }) => (
-            <TeamStandup
-              team_id={team_id}
-              standupVersion={null}
-            />
-          )
-        }
-      />
-      <Route exact path="/current" component={CurrentPrograms} />
-      <Route exact path="/team" component={Staff} />
-      <Route exact path="/privacy" component={PrivacyPolicy} />
-      <Route exact path="/companyfaq" render={() => <FAQ headerText="Company FAQs" data={companyFAQ} />} />
-      <Route exact path="/programfaq" render={() => <FAQ headerText="Program FAQs" data={programFAQ} />} />
-      <Route exact path="/project/:projectId" render={
-        ({ match: { params: { projectId } } }) => <ProjectShowcase projectId={projectId}/> } />
-      <Route path="*" exact component={Missing404Page} />
+        ({ match: { params: { team_id } } }) => (
+          rt.standup.component({
+            team_id,
+            standupVersion: null
+          })
+        )} />
+      <Route 
+        exact 
+        path={rt.programs.path} 
+        component={rt.programs.component} />
+      <Route 
+        exact 
+        path={rt.staff.path} 
+        component={rt.staff.component} />
+      <Route 
+        exact 
+        path={rt.privacy.path} 
+        component={rt.privacy.component} />
+      <Route 
+        exact 
+        path={rt.companyfaq.path} 
+        render={() => rt.companyfaq({
+          headerText: "Company FAQs",
+          data: companyFAQ
+        })} />
+      <Route 
+        exact 
+        path="/programfaq" 
+        render={() => rt.programfaq({
+          headerText: "Program FAQa",
+          data: programFAQ
+        })} />
+      <Route 
+        exact 
+        path={rt.showcase.path}
+        render={
+        ({ match: { params: { projectId } } }) => 
+        rt.showcase.component({ projectId })} />
+      <Route 
+        exact 
+        path={rt.notfound.path}
+        component={rt.notfound.component} />
     </Switch>
     <Footer />
   </div>
