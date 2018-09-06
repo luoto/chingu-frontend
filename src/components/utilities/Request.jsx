@@ -24,12 +24,16 @@ import Loader from "../Loader"
  */
 
 const Request = ({
-  ...props,
   component: Component,
   query,
-  variables,
   options,
   globalLoader,
+  /**
+   * ...props here to prevent wrapped components receiving themselves along with other unnecessary props (query, options, loader)
+   * Keep variables exposed to wrapped component
+   */
+  ...props,
+  variables,
 }) => (
     <Query query={query} variables={variables} {...options}>
       {
