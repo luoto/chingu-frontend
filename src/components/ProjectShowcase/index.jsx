@@ -12,74 +12,66 @@ import Error from "../Error"
 /*
 This component should only be concerned with the overall layout of the page and whether it is editable.
 */
-class ProjectShowcase extends React.Component {
-  state = {
-    editable: false
-  };
+const ProjectShowcase = props => {
+  const { project_id } = props.match.params
+  const isEditable = (user, project) =>
+    project.users.some((teamMember) => user.id === teamMember.id);
 
-  isEditable = (user, project) => {
-    return project.users.some((teamMember) => {
-      return user.id === teamMember.id;
-    });
-  }
+  return (
+    <Query
+      query={getProjectAndUser}
+      variables={{
+        id: project_id,
+        github_repo_id: props.github_repo_id
+      }}>
+      {({ error, loading, data }) => {
 
-  render() {
-    const { projectId } = this.props
-    return (
-      <Query
-        query={getProjectAndUser}
-        variables={{
-          id: projectId,
-          github_repo_id: this.props.github_repo_id
-        }}>
-        {({ error, loading, data }) => {
+        if (error) return <Error error={error.message} goBack="/projects" />
+        if (loading) return <Loader />
 
-          if (error) return <Error error={error.message} goBack="/" />
-          if (loading) return <Loader />
-          const { project } = data
+        const { project } = data
+        return (
+          <div className="project-portal">
+            <Query query={getUserId} fetchPolicy="cache-only">
+              {
+                // Get logged in user to determine if page should be editable.
+                ({ loading, data: { user } }) => {
+                  if (loading) return null
 
-          return (
-            <div className="project-portal">
-              <Query query={getUserId} fetchPolicy="cache-only">
-                {
-                  ({ loading, data: { user } }) => {
-                    if (loading) return null
-
-                    const editable = user && this.isEditable(user, project)
-                    return <React.Fragment>
-                      <Banner
+                  const editable = user && isEditable(user, project)
+                  return <React.Fragment>
+                    <Banner
+                      editable={editable}
+                      title={project.title}
+                      elevator_pitch={project.elevator_pitch}
+                      project_id={project_id}
+                    />
+                    <HeroImage
+                      editable={editable}
+                      title={project.title}
+                      images={project.images.length > 0 ? project.images[0] : undefined}
+                      project_id={project_id}
+                    />
+                    <div className="project-info-container">
+                      <ProjectDescription
                         editable={editable}
-                        title={project.title}
-                        elevator_pitch={project.elevator_pitch}
-                        project_id={projectId}
+                        description={project.description}
+                        project_id={project_id}
                       />
-                      <HeroImage
+                      <ProjectSideBar
+                        project={project}
                         editable={editable}
-                        title={project.title}
-                        images={project.images.length > 0 ? project.images[0] : undefined}
-                        project_id={projectId}
                       />
-                      <div className="project-info-container">
-                        <ProjectDescription
-                          editable={editable}
-                          description={project.description}
-                          project_id={projectId}
-                        />
-                        <ProjectSideBar
-                          project={project}
-                          editable={editable}
-                        />
-                      </div>
-                    </React.Fragment>
-                  }
+                    </div>
+                  </React.Fragment>
                 }
-              </Query>
-            </div>
-          );
-        }}
-      </Query>
-    );
-  }
+              }
+            </Query>
+          </div>
+        );
+      }}
+    </Query>
+  );
 }
 
 export default ProjectShowcase;
