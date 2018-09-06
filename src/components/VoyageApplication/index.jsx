@@ -28,10 +28,12 @@ const VoyageApplicationUserQuery = gql`
  *    status is 'profile_incomplete' -> Redirect /profile/update
  */
 
-const VoyageApplicationContainer = (
-  { voyage_id, voyageVersion, newUserVersion, data: { user: { status } } },
-) => {
-  // TODO: Redirect if :voyage_id from route params is not available for application
+const VoyageApplicationContainer = ({
+  voyageVersion,
+  newUserVersion,
+  match: { params: { voyage_id } },
+  data: { user: { status } }
+}) => {
   switch (status) {
     case 'voyage_ready':
       return (
@@ -63,7 +65,7 @@ const VoyageApplication = ({ version, voyage_id, newUser }) => {
       : "/profile";
 
     return <Redirect to={redirectLocation} />;
-  } 
+  }
 
   return (
     <div className="voyage-application-container">
@@ -84,7 +86,7 @@ const VoyageApplication = ({ version, voyage_id, newUser }) => {
 
 export default props =>
   <Request
-    {...props} 
+    {...props}
     component={VoyageApplicationContainer}
     query={VoyageApplicationUserQuery}
     options={{ fetchPolicy: "network-only" }}

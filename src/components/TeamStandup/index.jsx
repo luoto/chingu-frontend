@@ -53,7 +53,7 @@ class TeamStandup extends React.Component {
   }
 
   render() {
-    const { team_id, standupVersion } = this.props;
+    const { standupVersion, match: { params: { team_id } } } = this.props;
     const { error, response } = this.state;
 
     if (error) return <Error error={error.message} />;
@@ -76,4 +76,4 @@ class TeamStandup extends React.Component {
   }
 }
 
-export default TeamStandup;
+export default props => <TeamStandup {...props} />;
