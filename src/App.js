@@ -21,7 +21,7 @@ import Private from "./components/utilities/PrivateRoute"
 import AllProjects from './components/AllProjects';
 import TeamStandup from "./components/TeamStandup";
 import ProjectShowcase from "./components/ProjectShowcase"
-import rt from "./routes.cfg"
+import routes from "./routes.cfg"
 
 export default () => (
   <div className="App">
@@ -29,107 +29,95 @@ export default () => (
     <Switch>
       <Route 
         exact 
-        path={rt.landing.path} 
-        component={rt.landing.component} />
+        path={routes.landing.path} 
+        component={routes.landing.component} />
       <Route
         exact 
-        path={rt.login.path}
-        render={
-          ({ location: { search } }) => 
-            rt.login.component({ queryString: search })
-        }/>
+        path={routes.login.path}
+        component={routes.login.component} />
       <Private
         exact 
-        path={rt.register.path}
-        render={
-          () => rt.register({version: null}) // set custom 'chingu_application' version here
+        path={routes.register.path}
+        render={props => 
+          routes.register({version: null, ...props}) // set custom 'chingu_application' version here
         }/>
       <Private 
         exact 
-        path={rt.userprofile.path} 
-        // TODO: refactor - editable should not be here
-        render={() => 
-          rt.userprofile.component({ editable: true })} />
+        path={routes.userprofile.path} 
+        component={routes.userprofile.component} />
       <Route
         exact 
-        path={rt.profile.path}
-        render={
-          ({ match: { params: { username } } }) => (
-            rt.profile.component({username, editable: false})
-          )}/>
+        path={routes.profile.path}
+        component={routes.profile.component} />
       <Private 
         exact 
-        path={rt.voyages.path} 
-        component={rt.voyages.component} />
+        path={routes.voyages.path} 
+        component={routes.voyages.component} />
       <Private
         exact 
-        path="/voyage/application/:voyage_id"
-        render={
-          ({ match: { params: { voyage_id } } }) => (
-            rt.application.component({
-              voyage_id,
-              voyageVersion: null, // set custom 'voyage_application' version here
-              newUserVersion: null,
-            })
-          )}/>
+        path={routes.application.path}
+        render={props => (
+          routes.application.component({
+            voyageVersion: null, // set custom 'voyage_application' version here
+            newUserVersion: null,
+            ...props
+          })
+        )}/>
       <Private 
         exact 
-        path={rt.newsfeed.path}
-        component={rt.newsfeed.component} />
+        path={routes.newsfeed.path}
+        component={routes.newsfeed.component} />
       <Private 
         exact 
-        path={rt.checkin.path} 
-        component={rt.checkin.component} />
+        path={routes.checkin.path} 
+        component={routes.checkin.component} />
       <Route 
         exact 
-        path={rt.projects.path} 
-        component={rt.projects.component} />
+        path={routes.projects.path} 
+        component={routes.projects.component} />
       <Private
         exact 
-        path={rt.standup.path}
-        render={
-        ({ match: { params: { team_id } } }) => (
-          rt.standup.component({
-            team_id,
-            standupVersion: null
+        path={routes.standup.path}
+        render={props => (
+          routes.standup.component({
+            standupVersion: null,
+            ...props
           })
         )} />
       <Route 
         exact 
-        path={rt.programs.path} 
-        component={rt.programs.component} />
+        path={routes.programs.path} 
+        component={routes.programs.component} />
       <Route 
         exact 
-        path={rt.staff.path} 
-        component={rt.staff.component} />
+        path={routes.staff.path} 
+        component={routes.staff.component} />
       <Route 
         exact 
-        path={rt.privacy.path} 
-        component={rt.privacy.component} />
+        path={routes.privacy.path} 
+        component={routes.privacy.component} />
       <Route 
         exact 
-        path={rt.companyfaq.path} 
-        render={() => rt.companyfaq({
+        path={routes.companyfaq.path} 
+        render={() => routes.companyfaq({
           headerText: "Company FAQs",
           data: companyFAQ
         })} />
       <Route 
         exact 
         path="/programfaq" 
-        render={() => rt.programfaq({
+        render={() => routes.programfaq({
           headerText: "Program FAQa",
           data: programFAQ
         })} />
       <Route 
         exact 
-        path={rt.showcase.path}
-        render={
-        ({ match: { params: { projectId } } }) => 
-        rt.showcase.component({ projectId })} />
+        path={routes.showcase.path}
+        component={routes.showcase.component} />
       <Route 
         exact 
-        path={rt.notfound.path}
-        component={rt.notfound.component} />
+        path={routes.notfound.path}
+        component={routes.notfound.component} />
     </Switch>
     <Footer />
   </div>
